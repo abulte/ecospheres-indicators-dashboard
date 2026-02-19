@@ -7,5 +7,4 @@ dist/
 .uv/
 *.egg
 .DS_Store
-alembic/versions/*.py
-!alembic/versions/.gitkeep
+alembic/versions/.gitkeep
