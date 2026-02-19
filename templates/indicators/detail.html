@@ -58,6 +58,9 @@
   {% set rx = res.resource_extras or {} %}
   <table>
     <tbody>
+      <tr><td>Resource ID</td><td><code>{{ res.resource_id }}</code></td></tr>
+      {% set crawler_base = "https://demo-crawler.data.gouv.fr" if env == "demo" else "https://crawler.data.gouv.fr" %}
+      <tr><td>Checks log</td><td><a href="{{ crawler_base }}/api/checks/all/?resource_id={{ res.resource_id }}" target="_blank" rel="noopener">{{ crawler_base }}</a></td></tr>
       <tr><td>Format</td><td>{{ res.format or "—" }}</td></tr>
       <tr><td>Taille</td><td>{{ res.filesize | format_filesize }}</td></tr>
       <tr><td>Parsing démarré</td><td>{{ rx.get("analysis:parsing:started_at") or "—" }}</td></tr>
