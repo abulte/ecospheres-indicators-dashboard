@@ -50,6 +50,10 @@ class Resource(SQLModel, table=True):
     format: Optional[str] = None
     filetype: Optional[str] = None
     resource_type: Optional[str] = None
+    filesize: Optional[int] = None
+    resource_extras: Optional[dict[str, Any]] = Field(
+        default=None, sa_column=sa.Column(sa.JSON, nullable=True)
+    )
     tabular_api_url: Optional[str] = None
     # checks: [{"name": str, "ok": bool, "detail": any}]
     checks: Optional[list[dict[str, Any]]] = Field(

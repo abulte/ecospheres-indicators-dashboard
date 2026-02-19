@@ -1,6 +1,5 @@
 import json
 import logging
-import os
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -20,17 +19,18 @@ _RESOURCE_EXTRAS_SCHEMA = json.loads(Path(__file__).parent.joinpath("resource_ex
 _RESOURCE_EXTRAS_VALIDATOR = Draft202012Validator(_RESOURCE_EXTRAS_SCHEMA)
 
 _CORS_ORIGIN = "https://ecologie.data.gouv.fr"
+_ECOSPHERES_ORG_ID = "67884b4da4fca9c97bbef479"
 
 ENVIRONMENTS = {
     "demo": {
         "base_url": "https://demo.data.gouv.fr",
         "tabular_api_url": "https://tabular-api.preprod.data.gouv.fr",
-        "org_id": os.getenv("DATAGOUV_ORG_ID_DEMO"),
+        "org_id": _ECOSPHERES_ORG_ID,
     },
     "prod": {
         "base_url": "https://www.data.gouv.fr",
         "tabular_api_url": "https://tabular-api.data.gouv.fr",
-        "org_id": os.getenv("DATAGOUV_ORG_ID_PROD"),
+        "org_id": _ECOSPHERES_ORG_ID,
     },
 }
 
@@ -183,6 +183,8 @@ def _crawl_dataset(
             format=raw.get("format"),
             filetype=raw.get("filetype"),
             resource_type=raw.get("type"),
+            filesize=raw.get("filesize"),
+            resource_extras=resource_extras or None,
             tabular_api_url=tab_url,
             checks=resource_checks,
             tabular_api_ok=tab_ok,

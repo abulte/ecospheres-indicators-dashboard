@@ -11,56 +11,89 @@
 
 <table>
   <tbody>
+    {% set base_url = "https://demo.ecologie.data.gouv.fr" if env == "demo" else "https://ecologie.data.gouv.fr" %}
     <tr><td>Environnement</td><td><strong>{{ env | upper }}</strong></td></tr>
     <tr><td>Dataset ID</td><td><code>{{ indicator.dataset_id }}</code></td></tr>
-    <tr><td>Slug</td><td><code>{{ indicator.slug }}</code></td></tr>
+    <tr><td>Lien</td><td><a href="{{ base_url }}/indicators/{{ indicator.dataset_id }}" target="_blank" rel="noopener">{{ indicator.slug }}</a></td></tr>
     <tr><td>Viz activée</td><td>{{ "Oui" if indicator.enable_visualization else "Non" }}</td></tr>
-    <tr><td>Extras ecosphères</td><td>{{ "Oui" if indicator.has_ecospheres_extras else "Non" }}</td></tr>
     <tr><td>Nombre de ressources</td><td>{{ indicator.resource_count }}</td></tr>
   </tbody>
 </table>
 
-<h3>Ressources</h3>
-
-{% if resources %}
+{% set extras_check = indicator.checks | selectattr("name", "eq", "extras_schema") | first | default(none) %}
+{% if extras_check %}
+<h3>Extras schema</h3>
+{% if extras_check.ok %}
+<p><span class="badge badge-ok">✓ Valid</span></p>
+{% else %}
 <table>
   <thead>
-    <tr>
-      <th>Titre</th>
-      <th>Format</th>
-      <th>Type</th>
-      <th>Filetype</th>
-      <th>Checks</th>
-    </tr>
+    <tr><th>Chemin</th><th>Erreur</th></tr>
   </thead>
   <tbody>
-    {% for res in resources %}
+    {% for err in extras_check.detail %}
     <tr>
-      <td>
-        {% if res.url %}
-        <a href="{{ res.url }}" target="_blank" rel="noopener">{{ res.title }}</a>
-        {% else %}
-        {{ res.title }}
-        {% endif %}
-      </td>
-      <td>{{ res.format or "—" }}</td>
-      <td>{{ res.resource_type or "—" }}</td>
-      <td>{{ res.filetype or "—" }}</td>
-      <td>
-        {% if res.checks %}
-        {% for check in res.checks %}
-        <span class="badge {{ 'badge-ok' if check.ok else 'badge-failed' }}" title="{{ check.detail or '' }}">
-          {{ check.name }}
-        </span>
-        {% endfor %}
-        {% else %}
-        <span class="badge badge-missing">—</span>
-        {% endif %}
-      </td>
+      <td><code>{{ err.path }}</code></td>
+      <td>{{ err.message }}</td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
+{% endif %}
+{% endif %}
+
+<h3>Ressources</h3>
+
+{% if resources %}
+{% for res in resources %}
+<details class="resource-details">
+  <summary>
+    {{ res.title }}
+    {% if res.checks %}
+      {% for check in res.checks %}
+      <span class="badge {{ 'badge-ok' if check.ok else 'badge-failed' }}">{{ check.name }}</span>
+      {% endfor %}
+    {% endif %}
+  </summary>
+  {% set rx = res.resource_extras or {} %}
+  <table>
+    <tbody>
+      <tr><td>Format</td><td>{{ res.format or "—" }}</td></tr>
+      <tr><td>Taille</td><td>{{ res.filesize | format_filesize }}</td></tr>
+      <tr><td>Parsing démarré</td><td>{{ rx.get("analysis:parsing:started_at") or "—" }}</td></tr>
+      <tr><td>Parsing terminé</td><td>{{ rx.get("analysis:parsing:finished_at") or "—" }}</td></tr>
+      <tr><td>Dernière modification</td><td>{{ rx.get("analysis:last-modified-at") or "—" }}</td></tr>
+      <tr><td>Erreur parsing</td><td>{{ rx.get("analysis:parsing:error") or "—" }}</td></tr>
+    </tbody>
+  </table>
+  {% if res.checks %}
+  <table>
+    <thead>
+      <tr><th>Check</th><th>Statut</th><th>Détail</th></tr>
+    </thead>
+    <tbody>
+      {% for check in res.checks %}
+      <tr>
+        <td><code>{{ check.name }}</code></td>
+        <td><span class="badge {{ 'badge-ok' if check.ok else 'badge-failed' }}">{{ "✓" if check.ok else "✗" }}</span></td>
+        <td>
+          {% if check.detail is iterable and check.detail is not string %}
+            {% for err in check.detail %}
+            <div><code>{{ err.path }}</code> — {{ err.message }}</div>
+            {% endfor %}
+          {% elif check.detail %}
+            <code>{{ check.detail }}</code>
+          {% else %}
+            —
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</details>
+{% endfor %}
 {% else %}
 <p>Aucune ressource pour cet indicateur.</p>
 {% endif %}
