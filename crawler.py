@@ -83,6 +83,10 @@ def fetch_resources(client: httpx.Client, base_url: str, dataset_id: str, resour
 
 def check_extras(dataset_id: str, extras: dict) -> tuple[bool, bool, list[dict]]:
     """Validate dataset extras. Returns (has_ecospheres_extras, enable_visualization, checks)."""
+    # Always try to read enable_visualization regardless of schema validity
+    ind_extras = extras.get("ecospheres-indicateurs", {})
+    enable_visualization = bool(ind_extras.get("enable_visualization", False))
+
     raw_errors = list(_EXTRAS_VALIDATOR.iter_errors(extras))
     if raw_errors:
         errors = [
@@ -92,12 +96,9 @@ def check_extras(dataset_id: str, extras: dict) -> tuple[bool, bool, list[dict]]
         logger.warning("Extras schema violations for dataset %s (%d error(s)):", dataset_id, len(errors))
         for err in errors:
             logger.warning("  %s: %s", err["path"], err["message"])
-        checks = [_check("extras_schema", ok=False, detail=errors)]
-        return False, False, checks
+        return False, enable_visualization, [_check("extras_schema", ok=False, detail=errors)]
 
-    ind_extras = extras["ecospheres-indicateurs"]
-    checks = [_check("extras_schema", ok=True)]
-    return True, bool(ind_extras.get("enable_visualization", False)), checks
+    return True, enable_visualization, [_check("extras_schema", ok=True)]
 
 
 def check_resource_extras(resource_id: str, extras: dict) -> dict:

@@ -14,7 +14,7 @@
     <tr><td>Environnement</td><td><strong>{{ env | upper }}</strong></td></tr>
     <tr><td>Dataset ID</td><td><code>{{ indicator.dataset_id }}</code></td></tr>
     <tr><td>Slug</td><td><code>{{ indicator.slug }}</code></td></tr>
-    <tr><td>Visualisation activée</td><td>{{ "Oui" if indicator.enable_visualization else "Non" }}</td></tr>
+    <tr><td>Viz activée</td><td>{{ "Oui" if indicator.enable_visualization else "Non" }}</td></tr>
     <tr><td>Extras ecosphères</td><td>{{ "Oui" if indicator.has_ecospheres_extras else "Non" }}</td></tr>
     <tr><td>Nombre de ressources</td><td>{{ indicator.resource_count }}</td></tr>
   </tbody>

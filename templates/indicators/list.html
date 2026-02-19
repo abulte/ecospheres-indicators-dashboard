@@ -35,10 +35,7 @@
   <thead>
     <tr>
       <th>Titre</th>
-      <th>Slug</th>
-      <th>Viz</th>
       <th>Extras</th>
-      <th>Ressources</th>
       <th>API tabulaire</th>
     </tr>
   </thead>
@@ -51,10 +48,18 @@
           {{ ind.title }}
         </a>
       </td>
-      <td><code>{{ ind.slug }}</code></td>
-      <td>{{ "✓" if ind.enable_visualization else "—" }}</td>
-      <td>{{ "✓" if ind.has_ecospheres_extras else "—" }}</td>
-      <td>{{ ind.resource_count }}</td>
+      <td>
+        {% set extras_check = ind.checks | selectattr("name", "eq", "extras_schema") | first | default(none) %}
+        {% if extras_check %}
+          {% set error_count = extras_check.detail | length if extras_check.detail else 0 %}
+          <span class="badge {{ 'badge-ok' if extras_check.ok else 'badge-failed' }}"
+                title="{{ error_count ~ ' error(s)' if not extras_check.ok else '' }}">
+            {{ "✓" if extras_check.ok else error_count ~ " err" }}
+          </span>
+        {% else %}
+          <span class="badge badge-missing">—</span>
+        {% endif %}
+      </td>
       <td>
         {% set ok, total = counts %}
         {% if total == 0 %}
