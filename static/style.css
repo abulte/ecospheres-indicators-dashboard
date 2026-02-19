@@ -1,0 +1,96 @@
+/* SimpleCSS body width override */
+body {
+  grid-template-columns: 1fr min(45rem, 90%) 1fr;
+}
+
+main {
+  grid-column: 1 / -1;
+  width: min(80rem, 90%);
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* 2-column env grid */
+.env-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 640px) {
+  .env-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.env-card {
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1rem 1.5rem;
+  background: var(--bg);
+}
+
+.env-card h3 {
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.crawl-meta {
+  color: var(--text-light);
+  font-size: 0.9em;
+  margin-top: 0;
+}
+
+/* Status badges */
+.badge {
+  display: inline-block;
+  padding: 0.15em 0.5em;
+  border-radius: 0.25rem;
+  font-size: 0.8em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badge-idle     { background: #e5e7eb; color: #374151; }
+.badge-running  { background: #dbeafe; color: #1d4ed8; }
+.badge-completed,
+.badge-ok       { background: #d1fae5; color: #065f46; }
+.badge-failed   { background: #fee2e2; color: #991b1b; }
+.badge-partial  { background: #fef3c7; color: #92400e; }
+.badge-missing  { background: #f3f4f6; color: #9ca3af; }
+
+/* Active nav env link */
+.active-env {
+  font-weight: bold;
+}
+
+/* Inline code for HTTP status */
+.status-ok   { color: #065f46; }
+.status-fail { color: #991b1b; }
+
+/* Env label */
+.env-label {
+  font-size: 0.85em;
+  background: #f3f4f6;
+  padding: 0.1em 0.4em;
+  border-radius: 0.25rem;
+  font-weight: 700;
+}
+
+/* Error message */
+.error {
+  color: #991b1b;
+  background: #fee2e2;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+}
+
+/* Table tweaks */
+table {
+  width: 100%;
+  font-size: 0.9em;
+}

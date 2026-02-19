@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard — Ecosphères Indicators{% endblock %}
+
+{% block content %}
+<h2>Vue d'ensemble</h2>
+
+<div class="env-grid">
+  {% for env, stats in [("demo", demo_stats), ("prod", prod_stats)] %}
+  <section class="env-card">
+    <h3>
+      {{ env | upper }}
+      {% set state = states.get(env) %}
+      {% if state %}
+        <span class="badge badge-{{ state.status }}">{{ state.status }}</span>
+      {% endif %}
+    </h3>
+    {% if state %}
+    <p class="crawl-meta">
+      Dernier crawl : <strong>{{ state.completed_at | format_dt }}</strong>
+    </p>
+    {% if state.error %}
+    <p class="error">Erreur : {{ state.error }}</p>
+    {% endif %}
+    {% else %}
+    <p class="crawl-meta">Aucun crawl effectué</p>
+    {% endif %}
+
+    <table>
+      <tbody>
+        <tr><td>Indicateurs</td><td><strong>{{ stats.total }}</strong></td></tr>
+        <tr><td>Avec visualisation</td><td>{{ stats.with_viz }}</td></tr>
+        <tr><td>Avec extras ecosphères</td><td>{{ stats.with_extras }}</td></tr>
+        <tr><td>Ressources totales</td><td>{{ stats.total_resources }}</td></tr>
+        <tr>
+          <td>API tabulaire OK</td>
+          <td>
+            {{ stats.tabular_ok }} / {{ stats.total_resources }}
+            {% if stats.total_resources > 0 %}
+            <span class="badge {% if stats.tabular_ok == stats.total_resources %}badge-ok{% elif stats.tabular_ok == 0 %}badge-failed{% else %}badge-partial{% endif %}">
+              {{ (stats.tabular_ok / stats.total_resources * 100) | round(0) | int }}%
+            </span>
+            {% endif %}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      <a href="{{ url_for('indicators_list', env=env) }}">Voir les indicateurs →</a>
+    </p>
+  </section>
+  {% endfor %}
+</div>
+
+<h2>Comparaison des indicateurs par slug</h2>
+
+{% if both or demo_only or prod_only %}
+<table>
+  <thead>
+    <tr>
+      <th>Slug</th>
+      <th>Demo</th>
+      <th>Prod</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if both %}
+    <tr><td colspan="3"><em>Présents dans les deux environnements ({{ both | length }})</em></td></tr>
+    {% for slug in both %}
+    <tr>
+      <td>{{ slug }}</td>
+      <td>
+        <a href="{{ url_for('indicator_detail', dataset_id=demo_slugs[slug].dataset_id, env='demo') }}">
+          {{ demo_slugs[slug].title }}
+        </a>
+      </td>
+      <td>
+        <a href="{{ url_for('indicator_detail', dataset_id=prod_slugs[slug].dataset_id, env='prod') }}">
+          {{ prod_slugs[slug].title }}
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+    {% endif %}
+
+    {% if demo_only %}
+    <tr><td colspan="3"><em>Demo uniquement ({{ demo_only | length }})</em></td></tr>
+    {% for slug in demo_only %}
+    <tr>
+      <td>{{ slug }}</td>
+      <td>
+        <a href="{{ url_for('indicator_detail', dataset_id=demo_slugs[slug].dataset_id, env='demo') }}">
+          {{ demo_slugs[slug].title }}
+        </a>
+      </td>
+      <td><span class="badge badge-missing">absent</span></td>
+    </tr>
+    {% endfor %}
+    {% endif %}
+
+    {% if prod_only %}
+    <tr><td colspan="3"><em>Prod uniquement ({{ prod_only | length }})</em></td></tr>
+    {% for slug in prod_only %}
+    <tr>
+      <td>{{ slug }}</td>
+      <td><span class="badge badge-missing">absent</span></td>
+      <td>
+        <a href="{{ url_for('indicator_detail', dataset_id=prod_slugs[slug].dataset_id, env='prod') }}">
+          {{ prod_slugs[slug].title }}
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+    {% endif %}
+  </tbody>
+</table>
+{% else %}
+<p>Aucune donnée disponible. Lancez un crawl avec <code>uv run python cli.py crawl all</code>.</p>
+{% endif %}
+{% endblock %}

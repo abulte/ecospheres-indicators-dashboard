@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}{{ indicator.title }} — Ecosphères{% endblock %}
+
+{% block content %}
+<p>
+  <a href="{{ url_for('indicators_list', env=env) }}">← Retour aux indicateurs {{ env | upper }}</a>
+</p>
+
+<h2>{{ indicator.title }}</h2>
+
+<table>
+  <tbody>
+    <tr><td>Environnement</td><td><strong>{{ env | upper }}</strong></td></tr>
+    <tr><td>Dataset ID</td><td><code>{{ indicator.dataset_id }}</code></td></tr>
+    <tr><td>Slug</td><td><code>{{ indicator.slug }}</code></td></tr>
+    <tr><td>Visualisation activée</td><td>{{ "Oui" if indicator.enable_visualization else "Non" }}</td></tr>
+    <tr><td>Extras ecosphères</td><td>{{ "Oui" if indicator.has_ecospheres_extras else "Non" }}</td></tr>
+    <tr><td>Nombre de ressources</td><td>{{ indicator.resource_count }}</td></tr>
+  </tbody>
+</table>
+
+<h3>Ressources</h3>
+
+{% if resources %}
+<table>
+  <thead>
+    <tr>
+      <th>Titre</th>
+      <th>Format</th>
+      <th>Type</th>
+      <th>Filetype</th>
+      <th>Checks</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for res in resources %}
+    <tr>
+      <td>
+        {% if res.url %}
+        <a href="{{ res.url }}" target="_blank" rel="noopener">{{ res.title }}</a>
+        {% else %}
+        {{ res.title }}
+        {% endif %}
+      </td>
+      <td>{{ res.format or "—" }}</td>
+      <td>{{ res.resource_type or "—" }}</td>
+      <td>{{ res.filetype or "—" }}</td>
+      <td>
+        {% if res.checks %}
+        {% for check in res.checks %}
+        <span class="badge {{ 'badge-ok' if check.ok else 'badge-failed' }}" title="{{ check.detail or '' }}">
+          {{ check.name }}
+        </span>
+        {% endfor %}
+        {% else %}
+        <span class="badge badge-missing">—</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>Aucune ressource pour cet indicateur.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,30 @@
+[tools]
+python = "3.12"
+
+[tasks.dev]
+description = "Run development server"
+run = "uv run flask run --debug"
+
+[tasks.lint]
+description = "Lint with ruff"
+run = "uv run ruff check ."
+
+[tasks.format]
+description = "Format with ruff"
+run = "uv run ruff format ."
+
+[tasks.crawl-demo]
+description = "Crawl demo environment"
+run = "uv run python cli.py crawl demo"
+
+[tasks.crawl-prod]
+description = "Crawl prod environment"
+run = "uv run python cli.py crawl prod"
+
+[tasks.crawl-all]
+description = "Crawl all environments"
+run = "uv run python cli.py crawl all"
+
+[tasks.db-migrate]
+description = "Run alembic migrations"
+run = "uv run alembic upgrade head"

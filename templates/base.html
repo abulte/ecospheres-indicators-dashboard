@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Ecosphères Indicators{% endblock %}</title>
+  <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="{{ url_for('index') }}">Dashboard</a>
+      <a href="{{ url_for('indicators_list', env='demo') }}">Demo</a>
+      <a href="{{ url_for('indicators_list', env='prod') }}">Prod</a>
+    </nav>
+    <h1>Ecosphères Indicators Dashboard</h1>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <p>Données issues de <a href="https://demo.data.gouv.fr" target="_blank">demo.data.gouv.fr</a> et <a href="https://www.data.gouv.fr" target="_blank">data.gouv.fr</a></p>
+  </footer>
+</body>
+</html>

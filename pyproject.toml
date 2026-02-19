@@ -1,0 +1,18 @@
+[project]
+name = "ecospheres-indicators-dashboard"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "flask>=3.1",
+    "sqlmodel>=0.0.22",
+    "alembic>=1.14",
+    "python-dotenv>=1.0",
+    "gunicorn>=23.0",
+    "psycopg2-binary>=2.9",
+    "httpx>=0.28",
+    "minicli>=0.5",
+    "jsonschema>=4.26.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]

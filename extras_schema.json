@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["id", "ecospheres-indicateurs"],
+  "properties": {
+    "id": { "type": "integer" },
+    "ecospheres-indicateurs": {
+      "type": "object",
+      "required": ["unite", "mailles_geographiques", "axes", "calcul", "sources", "enable_visualization"],
+      "properties": {
+        "unite": { "type": "string" },
+        "mailles_geographiques": { "type": "array", "items": { "type": "string" } },
+        "axes": {
+          "type": "object",
+          "additionalProperties": { "type": "array", "items": { "type": "string" } }
+        },
+        "calcul": {
+          "type": "object",
+          "required": ["responsable", "methode"],
+          "properties": {
+            "responsable": { "type": "string" },
+            "methode": { "type": "string" }
+          }
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["nom", "url", "description", "producteur", "distributeur", "plage_temporelle"],
+            "properties": {
+              "nom": { "type": "string" },
+              "url": { "type": "string" },
+              "description": { "type": "string" },
+              "producteur": { "type": "string" },
+              "distributeur": { "type": "string" },
+              "plage_temporelle": {
+                "type": "object",
+                "required": ["start", "end"],
+                "properties": {
+                  "start": { "type": "string" },
+                  "end": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "enable_visualization": { "type": "boolean" },
+        "summable": { "type": "boolean" },
+        "y_start_at_zero": { "type": "boolean" },
+        "ignore_format_big_number": { "type": "boolean" }
+      }
+    }
+  }
+}

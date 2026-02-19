@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["ecospheres-indicateurs"],
+  "properties": {
+    "ecospheres-indicateurs": {
+      "type": "object",
+      "required": ["maille", "value-column", "axes"],
+      "properties": {
+        "maille": { "type": "string" },
+        "value-column": { "type": "string" },
+        "axes": {
+          "type": "object",
+          "additionalProperties": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

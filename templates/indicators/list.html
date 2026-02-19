@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Indicateurs {{ env | upper }} — Ecosphères{% endblock %}
+
+{% block content %}
+<h2>
+  Indicateurs — <span class="env-label">{{ env | upper }}</span>
+  {% if state %}
+    <span class="badge badge-{{ state.status }}">{{ state.status }}</span>
+  {% endif %}
+</h2>
+
+{% if state %}
+<p class="crawl-meta">
+  Dernier crawl : <strong>{{ state.completed_at | format_dt }}</strong>
+  {% if state.indicator_count is not none %}
+  — {{ state.indicator_count }} indicateur(s)
+  {% endif %}
+</p>
+{% if state.error %}
+<p class="error">Erreur : {{ state.error }}</p>
+{% endif %}
+{% endif %}
+
+<p>
+  <a href="{{ url_for('indicators_list', env='demo') }}"
+     {% if env == 'demo' %}class="active-env"{% endif %}>Demo</a>
+  |
+  <a href="{{ url_for('indicators_list', env='prod') }}"
+     {% if env == 'prod' %}class="active-env"{% endif %}>Prod</a>
+</p>
+
+{% if indicators %}
+<table>
+  <thead>
+    <tr>
+      <th>Titre</th>
+      <th>Slug</th>
+      <th>Viz</th>
+      <th>Extras</th>
+      <th>Ressources</th>
+      <th>API tabulaire</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for ind in indicators %}
+    {% set counts = tabular_counts.get(ind.id, (0, 0)) %}
+    <tr>
+      <td>
+        <a href="{{ url_for('indicator_detail', dataset_id=ind.dataset_id, env=env) }}">
+          {{ ind.title }}
+        </a>
+      </td>
+      <td><code>{{ ind.slug }}</code></td>
+      <td>{{ "✓" if ind.enable_visualization else "—" }}</td>
+      <td>{{ "✓" if ind.has_ecospheres_extras else "—" }}</td>
+      <td>{{ ind.resource_count }}</td>
+      <td>
+        {% set ok, total = counts %}
+        {% if total == 0 %}
+        <span class="badge badge-missing">—</span>
+        {% elif ok == total %}
+        <span class="badge badge-ok">{{ ok }}/{{ total }}</span>
+        {% elif ok == 0 %}
+        <span class="badge badge-failed">{{ ok }}/{{ total }}</span>
+        {% else %}
+        <span class="badge badge-partial">{{ ok }}/{{ total }}</span>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>Aucun indicateur disponible. Lancez un crawl avec <code>uv run python cli.py crawl {{ env }}</code>.</p>
+{% endif %}
+{% endblock %}
