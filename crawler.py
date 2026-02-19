@@ -169,12 +169,16 @@ def _crawl_dataset(
         logger.warning("[%s] Could not fetch resources for %s: %s", env, dataset_id, e)
         raw_resources = []
 
+    checks_ok_count = 0
     for raw in raw_resources:
         resource_id = raw["id"]
         resource_extras = raw.get("extras", {})
         extras_check = check_resource_extras(resource_id, resource_extras)
         tab_url, resource_checks, tab_ok = check_tabular_api(client, tabular_api_url, resource_id)
         resource_checks = [extras_check] + resource_checks
+        all_ok = extras_check["ok"] and tab_ok
+        if all_ok:
+            checks_ok_count += 1
         session.add(Resource(
             indicator_id=indicator.id,
             resource_id=resource_id,
@@ -187,16 +191,15 @@ def _crawl_dataset(
             resource_extras=resource_extras or None,
             tabular_api_url=tab_url,
             checks=resource_checks,
-            tabular_api_ok=tab_ok,
+            tabular_api_ok=all_ok,
         ))
 
     indicator.resource_count = len(raw_resources)
     session.commit()
 
-    tabular_ok_count = sum(1 for r in indicator.resources if r.tabular_api_ok)
     logger.info(
-        "[%s] %s: %d resource(s), tabular ok: %d/%d",
-        env, dataset_id, len(raw_resources), tabular_ok_count, len(raw_resources),
+        "[%s] %s: %d resource(s), checks ok: %d/%d",
+        env, dataset_id, len(raw_resources), checks_ok_count, len(raw_resources),
     )
 
 

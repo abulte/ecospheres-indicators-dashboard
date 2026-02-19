@@ -1,0 +1,9 @@
+{
+  "name": "ecospheres-indicators-dashboard",
+  "cron": [
+    {
+      "command": "python cli.py crawl all",
+      "schedule": "0 7 * * *"
+    }
+  ]
+}

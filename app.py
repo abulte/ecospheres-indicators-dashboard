@@ -84,7 +84,7 @@ def _compute_stats(env: str, session: Session) -> dict:
         "with_viz": sum(1 for i in indicators if i.enable_visualization),
         "with_extras": sum(1 for i in indicators if i.has_ecospheres_extras),
         "total_resources": len(resources),
-        "tabular_ok": sum(1 for r in resources if r.checks and all(c["ok"] for c in r.checks)),
+        "tabular_ok": sum(1 for r in resources if r.tabular_api_ok),
     }
 
 
@@ -98,13 +98,16 @@ def indicators_list():
     state = session.exec(select(CrawlState).where(CrawlState.environment == env)).first()
     indicators = session.exec(select(Indicator).where(Indicator.environment == env)).all()
 
+    indicator_ids = [ind.id for ind in indicators]
+    all_resources = session.exec(select(Resource).where(Resource.indicator_id.in_(indicator_ids))).all()
+    resources_by_indicator: dict[int, list[Resource]] = {}
+    for r in all_resources:
+        resources_by_indicator.setdefault(r.indicator_id, []).append(r)
+
     tabular_counts: dict[int, tuple[int, int]] = {}
     for ind in indicators:
-        resources = session.exec(select(Resource).where(Resource.indicator_id == ind.id)).all()
-        tabular_counts[ind.id] = (
-            sum(1 for r in resources if r.checks and all(c["ok"] for c in r.checks)),
-            len(resources),
-        )
+        rs = resources_by_indicator.get(ind.id, [])
+        tabular_counts[ind.id] = (sum(1 for r in rs if r.tabular_api_ok), len(rs))
 
     return render_template(
         "indicators/list.html",

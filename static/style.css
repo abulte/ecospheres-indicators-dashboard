@@ -10,34 +10,6 @@ main {
   padding: 0 1rem;
 }
 
-/* 2-column env grid */
-.env-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-@media (max-width: 640px) {
-  .env-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.env-card {
-  border: 1px solid var(--border);
-  border-radius: 0.5rem;
-  padding: 1rem 1.5rem;
-  background: var(--bg);
-}
-
-.env-card h3 {
-  margin-top: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
 .crawl-meta {
   color: var(--text-light);
   font-size: 0.9em;
@@ -67,10 +39,6 @@ main {
 .active-env {
   font-weight: bold;
 }
-
-/* Inline code for HTTP status */
-.status-ok   { color: #065f46; }
-.status-fail { color: #991b1b; }
 
 /* Env label */
 .env-label {
