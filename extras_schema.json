@@ -47,7 +47,8 @@
         "enable_visualization": { "type": "boolean" },
         "summable": { "type": "boolean" },
         "y_start_at_zero": { "type": "boolean" },
-        "ignore_format_big_number": { "type": "boolean" }
+        "ignore_format_big_number": { "type": "boolean" },
+        "next_expected_update_quarter": { "type": "string" }
       }
     }
   }
