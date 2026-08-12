@@ -18,9 +18,35 @@ indicators:
 - `object_type: datasets` — the indicators list is a filtered dataset search
 - `universe_query`: only datasets tagged `ecospheres-indicateurs` **and** belonging to organization `67884b4da4fca9c97bbef479` are returned.
 - `filter_prefix: ecospheres-indicateurs` is reused to:
-  - detect a single dataset as an indicator client-side (`isIndicator` in `src/custom/ecospheres/utils/indicator.ts` checks `dataset.tags.includes(filter_prefix)`),
-  - namespace the faceted filter tags (e.g. `secteur`), built as `${filter_prefix}-${filterId}-${valueId}`.
+  - detect a single dataset as an indicator client-side (`dataset.tags.includes(filter_prefix)`),
+  - namespace the faceted filter tags (e.g. `secteur`), built as `${filter_prefix}-${filterId}-${valueId}` (see details below).
 - Additional facets (`secteur`, `date de mise à jour`, etc.) are plain data.gouv.fr tags following that `ecospheres-indicateurs-<filter>-<value>` convention, configured under `pages.indicators.filters` in the same YAML.
+
+### Tag format for filters: `secteur` example
+
+See https://github.com/opendatateam/udata-front-kit/blob/main/configs/ecospheres/config.yaml > `pages.indicators.filters`
+
+```yaml
+- id: secteur
+  ...
+  use_filter_prefix: true
+  values:
+    - id: agriculture-forets-sols
+      name: Agriculture, Forêts et Sols
+    - id: alimentation
+      name: Alimentation
+    - id: batiment
+      name: Bâtiment
+    - id: dechets
+      name: Déchets
+  ...
+```
+
+For a dataset to appear under a given "Secteur" facet value, the dataset producer must add the corresponding tag `ecospheres-indicateurs-secteur-<value.id>` to the dataset, i.e. `${filter_prefix}-${filter.id}-${value.id}`. 
+
+For "Agriculture, Forêts et Sols" that tag is `ecospheres-indicateurs-secteur-agriculture-forets-sols`. 
+
+A dataset can carry several `ecospheres-indicateurs-secteur-*` tags if it spans multiple sectors, in addition to the base `ecospheres-indicateurs` tag required for it to be picked up as an indicator at all (see `universe_query` above).
 
 ## Native data.gouv.fr metadata used
 
