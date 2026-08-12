@@ -62,3 +62,19 @@ table {
   width: 100%;
   font-size: 0.9em;
 }
+
+/* Markdown doc page */
+.markdown-body {
+  line-height: 1.6;
+}
+
+.markdown-body table {
+  width: auto;
+  max-width: 100%;
+  display: block;
+  overflow-x: auto;
+}
+
+.markdown-body code {
+  font-size: 0.9em;
+}

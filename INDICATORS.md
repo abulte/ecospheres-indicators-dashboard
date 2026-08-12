@@ -4,7 +4,7 @@ Indicators are not a separate data.gouv.fr object type: they are regular **datas
 
 ## Selection
 
-Configured in `configs/ecospheres/config.yaml` under `pages.indicators` of https://github.com/opendatateam/udata-front-kit/:
+Configured in `configs/ecospheres/config.yaml` under `pages.indicators` of <https://github.com/opendatateam/udata-front-kit/>:
 
 ```yaml
 indicators:
@@ -24,7 +24,7 @@ indicators:
 
 ### Tag format for filters: `secteur` example
 
-See https://github.com/opendatateam/udata-front-kit/blob/main/configs/ecospheres/config.yaml > `pages.indicators.filters`
+See <https://github.com/opendatateam/udata-front-kit/blob/main/configs/ecospheres/config.yaml> > `pages.indicators.filters`
 
 ```yaml
 - id: secteur
@@ -50,7 +50,7 @@ A dataset can carry several `ecospheres-indicateurs-secteur-*` tags if it spans 
 
 ## Native data.gouv.fr metadata used
 
-See https://guides.data.gouv.fr/api-de-data.gouv.fr/reference/datasets
+See <https://guides.data.gouv.fr/api-de-data.gouv.fr/reference/datasets>
 
 Standard dataset (`DatasetV2`) fields, displayed as-is:
 
@@ -113,4 +113,4 @@ Note: the schema does not constrain `maille` to an enum; the frontend narrows it
 
 A monitoring dashboard is deployed at [indicators-dashboard.sandbox.data.developpement-durable.gouv.fr](https://indicators-dashboard.sandbox.data.developpement-durable.gouv.fr). It crawls indicator datasets on `demo.data.gouv.fr` and `www.data.gouv.fr` and lets the team check, for each one, that its custom metadata (extras) validates against the expected schemas and that its resource files are correctly "APIfied" (reachable and CORS-enabled on the Tabular API) — catching publication issues before they reach the visualization layer.
 
-Github source: https://github.com/abulte/ecospheres-indicators-dashboard
+Github source: <https://github.com/abulte/ecospheres-indicators-dashboard>

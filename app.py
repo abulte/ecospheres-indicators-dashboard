@@ -1,10 +1,12 @@
 import os
 from datetime import datetime
+from pathlib import Path
 
 from dotenv import load_dotenv
 
 load_dotenv()
 
+import markdown
 from flask import Flask, abort, g, render_template, request
 from sqlmodel import Session, create_engine, select
 
@@ -12,6 +14,8 @@ from models import CrawlState, Indicator, Resource
 
 DATABASE_URL = os.environ["DATABASE_URL"].replace("postgres://", "postgresql://", 1)
 engine = create_engine(DATABASE_URL)
+
+INDICATORS_DOC_PATH = Path(__file__).parent / "INDICATORS.md"
 
 app = Flask(__name__)
 
@@ -142,3 +146,10 @@ def indicator_detail(dataset_id: str):
         indicator=indicator,
         resources=resources,
     )
+
+
+@app.route("/doc")
+def doc():
+    content = INDICATORS_DOC_PATH.read_text()
+    doc_html = markdown.markdown(content, extensions=["tables", "fenced_code"])
+    return render_template("doc.html", doc_html=doc_html)
