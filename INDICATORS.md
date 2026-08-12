@@ -50,6 +50,8 @@ A dataset can carry several `ecospheres-indicateurs-secteur-*` tags if it spans 
 
 ## Native data.gouv.fr metadata used
 
+See https://guides.data.gouv.fr/api-de-data.gouv.fr/reference/datasets
+
 Standard dataset (`DatasetV2`) fields, displayed as-is:
 
 | Field | Used for |
@@ -62,7 +64,8 @@ Standard dataset (`DatasetV2`) fields, displayed as-is:
 | `created_at`, `last_update` | "Date de création" / "Date de mise à jour" |
 | `frequency` | "Fréquence de mise à jour" |
 | `license` | Licence badge |
-| `organization` | Sidebar / source attribution |
+| `organization` | Sidebar attribution |
+| `contact_points` | Array of attributions / contacts |
 | resources (`main` group) | "Fichiers" tab, and viz data source (see below) |
 | `extras` (generic) | Rendered in a raw "Extras" accordion for debugging |
 
